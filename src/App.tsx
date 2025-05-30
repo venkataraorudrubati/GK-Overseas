@@ -1,4 +1,5 @@
-import { useEffect, useState, MouseEvent } from 'react';
+import { useEffect, useState } from 'react';
+import type { MouseEvent } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { X, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
@@ -21,7 +22,7 @@ import InterviewPreparation from './components/InterviewPreparation';
 
 function HomePage() {
   return (
-    <>
+    <div className="overflow-x-hidden">
       <Hero />
       <About />
       <WhyChooseUs />
@@ -29,7 +30,7 @@ function HomePage() {
       <Destinations />
       <Testimonials />
       <Contact />
-    </>
+    </div>
   );
 }
 
@@ -44,6 +45,11 @@ function App() {
   ];
 
   useEffect(() => {
+    const meta = document.createElement('meta');
+    meta.name = 'viewport';
+    meta.content = 'width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no';
+    document.head.appendChild(meta);
+
     const loadTimer = setTimeout(() => {
       setIsLoading(false);
     }, 2000);
@@ -69,6 +75,7 @@ function App() {
     return () => {
       clearTimeout(loadTimer);
       clearTimeout(offerTimer);
+      document.head.removeChild(meta);
     };
   }, []);
 
@@ -107,8 +114,7 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen bg-white relative">
-        {/* Page Loader */}
+      <div className="min-h-screen bg-white relative overflow-x-hidden">
         {isLoading && (
           <div className="fixed inset-0 bg-white z-50 flex items-center justify-center">
             <div className="w-full max-w-md h-64">
@@ -144,13 +150,11 @@ function App() {
             </Routes>
             <Footer />
 
-            {/* WhatsApp Floating Button */}
             <div className="fixed bottom-6 right-6 z-40">
               <button
                 onClick={handleWhatsAppClick}
                 className="bg-green-500 hover:bg-green-600 text-white rounded-full p-3 shadow-lg transition-all duration-300 flex items-center justify-center"
                 aria-label="Chat on WhatsApp"
-                title="Chat with us on WhatsApp"
               >
                 <div className="relative">
                   <MessageCircle className="w-8 h-8" />
@@ -164,18 +168,16 @@ function App() {
           </>
         )}
 
-        {/* Enhanced Offer Popup */}
         {showOffer && !isLoading && (
           <div 
-            className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-4"
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50 p-2 sm:p-4"
             onClick={handleBackdropClick}
           >
-            <div className="bg-white rounded-lg shadow-xl relative overflow-hidden w-full max-w-2xl">
+            <div className="bg-white rounded-lg shadow-xl relative overflow-hidden w-full max-w-2xl mx-2">
               <button 
                 onClick={handleCloseOffer}
                 className="absolute top-2 right-2 z-20 bg-white rounded-full p-1 shadow-md text-gray-500 hover:text-gray-700 hover:bg-gray-100 transition-colors"
                 aria-label="Close offer popup"
-                title="Close offer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -184,62 +186,58 @@ function App() {
                 <img 
                   src={offerImages[currentImageIndex]} 
                   alt="Special Offer"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                   loading="lazy"
                 />
                 
                 <button 
-                  onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                  onClick={(e) => {
                     e.stopPropagation();
                     prevImage();
                   }}
                   className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-white/80 rounded-full p-1 shadow-md hover:bg-white transition-colors"
                   aria-label="Previous offer image"
-                  title="Previous image"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </button>
                 <button 
-                  onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                  onClick={(e) => {
                     e.stopPropagation();
                     nextImage();
                   }}
                   className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-white/80 rounded-full p-1 shadow-md hover:bg-white transition-colors"
                   aria-label="Next offer image"
-                  title="Next image"
                 >
                   <ChevronRight className="h-5 w-5" />
                 </button>
               </div>
               
-              <div className="p-4 sm:p-6">
+              <div className="p-3 sm:p-6">
                 <div className="bg-blue-50 border-l-4 border-blue-400 p-3 mb-4 rounded">
-                  <p className="text-blue-800 font-medium">
+                  <p className="text-blue-800 font-medium text-sm sm:text-base">
                     We are offering a <span className="font-bold">FREE Laptop or Flight Ticket</span> to the first 50 students who enroll with us in this intake!
                   </p>
                 </div>
           
-                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 justify-center">
                   <button
-                    onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                    onClick={(e) => {
                       e.stopPropagation();
                       handleConsultNow();
                     }}
-                    className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-6 py-2 rounded-lg font-medium hover:from-primary-700 hover:to-secondary-700 transition-all duration-300 shadow-md"
-                    aria-label="Book free consultation"
+                    className="bg-gradient-to-r from-primary-600 to-secondary-600 text-white px-4 py-2 sm:px-6 sm:py-2 rounded-lg font-medium hover:from-primary-700 hover:to-secondary-700 transition-all duration-300 shadow-md text-sm sm:text-base"
                   >
-                    Book Free Consultation Now
+                    Book Free Consultation
                   </button>
                   <button
-                    onClick={(e: MouseEvent<HTMLButtonElement>) => {
+                    onClick={(e) => {
                       e.stopPropagation();
                       handleWhatsAppClick();
                     }}
-                    className="bg-green-500 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-md flex items-center justify-center gap-2"
-                    aria-label="Chat on WhatsApp"
+                    className="bg-green-500 text-white px-4 py-2 sm:px-6 sm:py-2 rounded-lg font-medium hover:bg-green-600 transition-all duration-300 shadow-md flex items-center justify-center gap-2 text-sm sm:text-base"
                   >
                     <MessageCircle className="w-4 h-4" />
-                    Chat on WhatsApp
+                    WhatsApp
                   </button>
                 </div>
                 <p className="text-xs text-gray-500 mt-3 text-center">
